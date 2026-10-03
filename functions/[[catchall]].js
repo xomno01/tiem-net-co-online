@@ -1,5 +1,10 @@
-// Cloudflare Pages Functions - Full-Stack Mock Backend
+// Cloudflare Pages Functions - Full-Stack Backend
+const userSaves = new Map();
+const XOMNO01_SAVE = {"v":1,"shopName":"CYBER XOMNO01","serviceSign":{"line1":"","line2":""},"autoDebtUntil":0,"playerName":"Anh Lộc","playerGender":"m","playerLook":{"skin":"#e8b890","hair":"#1f1a1a","style":"messy","shirt":"#f4f4f4","pants":"#3a6bc9","shoes":"#6b4a2a","acc":"","gender":"m"},"money":21430000,"day":4,"time":480,"fame":380,"reviews":[5,5,5,5,5,4,5],"rating":4.8,"stage":1,"esports":{"v":1,"rng":14731,"nextId":1,"rating":1200,"fans":0,"team":[null,null,null,null,null],"players":{},"scouts":{},"trainDay":0,"inviteDay":0,"matchDay":0,"boostUntil":0,"history":[],"series":null},"progression":{"xpTotal":750,"level":5,"dayPaid":3,"rewardKeys":["quest:0","quest:1","quest:2","quest:3","quest:4","quest:5"]},"hr":{"rng":21193292,"freeFlyers":1,"trainingPoints":0,"shards":0,"channels":{"flyer":{"noA":0,"noS":0,"draws":0},"facebook":{"noA":0,"noS":0,"draws":0},"ads":{"noA":0,"noS":0,"draws":0}},"lastResult":null,"log":[],"incidents":[]},"live":{"v":1,"unlocks":{"done":[],"auto":["pc:potato","part:kb:4","part:mouse:4","decor:plant","decor:trash_bin","decor:cactus","decor:garden_1","item:nuoc_suoi","item:nuoc_ngot","item:mi_goi","up:cooling:1","up:shoes:1"],"extra":[],"at":{"pc:potato":1,"part:kb:4":1,"part:mouse:4":1,"decor:plant":1,"decor:trash_bin":1,"decor:cactus":1,"decor:garden_1":1,"item:nuoc_suoi":1,"item:nuoc_ngot":1,"item:mi_goi":1,"up:cooling:1":1,"up:shoes:1":1},"pending":[]},"npcs":{},"chains":{},"evt":{"last":{},"n":{},"microT":30},"biz":{"priceMult":1,"late":false,"happy":false,"memberPromo":false,"flyerDay":0,"fbUntil":0,"supply":1,"supplyDay":0,"supplyEvent":1,"supplyEventDay":0,"buzz":0,"sponsorUntil":0,"referrals":[]},"rival":{"state":"none","since":0},"tour":{"state":"none","day":0,"startT":0,"pen":0,"count":0},"goals":{"daily":[],"dailyDay":0,"ch":{},"npc":[]},"world":{"pcDay":-9,"beautyDay":-9,"beautyRef":0,"priceDay":-9,"priceDir":0,"upDay":-9},"stats":{"extends":0,"selfRepairs":0,"debtsCollected":0,"tournaments":0,"lateNights":0,"fullHouse":0,"maxLagComplaints":0,"regularVisits":0,"bestDayCustomers":0,"bestDayRevenue":0,"bestNightCustomers":0,"goodDayStreak":0,"noBreakDays":0,"fastOpens":0,"topups":0,"maxRel":0,"referrals":0},"today":{},"sold":{},"log":[],"guide":{"seen":{},"n":{},"done":{},"off":false},"community":{"shown":0,"joined":false}},"kitchen":{"inventory":{"mi-goi":25,"trung-ga":25,"xuc-xich":25},"discovered":{},"prepared":{},"menu":[],"pins":[],"shards":0,"shardsEarned":0,"sssClaims":{},"giftedSSS":{},"boxOpens":0,"boxPity":0,"boxLegendPity":0,"marketVersion":2,"marketDay":0,"marketRevision":0,"marketResetAt":0,"boxResetAt":0,"boxPurchases":0,"market":[],"huntDay":0,"hunts":0,"rng":2463534242,"sales":0},"blackMarket":{"version":1,"unlocked":false,"introSeen":false,"seed":1128810947,"rng":1,"stallSlots":5,"marketDay":0,"acc":0,"nextId":1,"offers":[],"listings":[],"pending":[],"bargainBuys":[],"stock":{"parts":[],"cards":{}},"cardsIssued":{},"watch":[],"ops":{},"opOrder":[],"stats":{"bought":0,"spent":0,"sold":0,"gross":0,"fees":0,"collected":0},"today":{"day":0,"bought":0,"fees":0,"revenue":0}},"bag":{"v":1,"seed":1776064949,"items":{},"opened":{},"day":0,"got":{"lixi":0},"bought":{},"equip":{"frame":null,"bubble":null,"title":null},"seen":{},"log":[],"stats":{"lixiOpened":0,"chestsOpened":0,"ticketsUsed":0,"scratched":0,"scratchWon":0,"jackpots":0,"bigWins":0,"giftsPlaced":0,"giftsSent":0,"giftsGot":0},"ledger":{"money":0},"gifts":{"sent":[],"recv":{}}},"gigs":{"v":1,"boardSeed":2874071548,"cooldowns":{},"seen":{},"scrap":{"kg":0},"cards":{"sold":0,"profit":0},"odd":{"day":0,"jobs":[]},"night":{"day":0,"income":0,"pcs":0,"wear":0},"stream":{"day":0,"score":0,"donate":0},"total":{"money":0},"today":{"day":0,"scrap":0,"cards":0,"odd":0,"night":0,"stream":0}},"expansion":0,"floorFinishes":{"rooms":{}},"floors":{"built":1,"building":null,"active":0,"rooms":[{"pcs":[{"id":1,"num":1,"type":"gaming","x":4,"y":2,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":1,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0},{"id":2,"num":2,"type":"gaming","x":5,"y":2,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":1,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0},{"id":3,"num":3,"type":"gaming","x":6,"y":2,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":1,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0},{"id":4,"num":4,"type":"gaming","x":7,"y":2,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":1,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0},{"id":6,"num":5,"type":"gaming","x":4,"y":5,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":4,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0},{"id":7,"num":6,"type":"gaming","x":5,"y":5,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":4,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0},{"id":8,"num":7,"type":"gaming","x":6,"y":5,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":4,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0},{"id":9,"num":8,"type":"gaming","x":7,"y":5,"chair":2,"gear":1,"parts":{"kb":2,"mouse":2,"hs":2,"monitor":2,"cooler":2,"ram":1,"ssd":2},"vip":false,"booking":null,"bornDay":4,"clean":100,"cond":100,"state":"idle","locked":false,"fault":null,"customerId":null,"session":null,"cleanJob":null,"repairJob":null,"techCall":null,"helpJob":null,"hours":0,"revenue":0}],"decor":[],"trash":[],"customers":[],"workers":[{"id":5,"rosterId":null,"role":"owner","name":"Chủ quán","look":{"skin":"#e8b890","hair":"#1f1a1a","style":"messy","shirt":"#f4f4f4","pants":"#3a6bc9","shoes":"#6b4a2a","acc":"","gender":"m"},"level":1,"x":1.5,"y":9.5,"dir":"down","frame":0,"path":[],"moving":false,"job":null,"queue":[],"bubble":null,"working":false,"carry":null,"dest":null,"mgr":null}],"payQueue":[],"waitQueue":[]}]},"upgrades":{"counter":1,"floor":1,"wall":1,"light":1,"cooling":1,"internet":1,"router":1,"power":1,"kitchen":1,"shoes":0},"pcs":[],"storedPcs":[],"decor":[],"trash":[],"stash":{},"customers":[],"workers":[],"staff":[],"payQueue":[],"waitQueue":[],"stock":{"nuoc_suoi":30,"nuoc_ngot":30,"mi_goi":15,"tang_luc":30},"autoRestock":true,"members":[],"debts":[],"finance":{"version":1,"nextId":1,"loan":null,"history":[],"seizedPcs":0,"bankrupt":false,"bankruptcyReason":"","bankruptcyDay":0},"events":[],"buffs":[],"stats":{"served":72,"pcsOpened":72,"drinksSold":45,"foodSold":38,"totalEarned":4250000,"cleaned":22,"trashPicked":28,"repaired":6,"longestSession":0,"fiveStars":35,"debtsGiven":0,"angry":0,"runaways":0},"today":{"rev":{"pc":0,"game":0,"food":0,"drink":0,"topup":0,"debt":0,"tip":0},"cost":{"elec":0,"net":0,"ingredients":0,"repair":0,"salary":0,"staffMistakes":0,"loan":0,"tax":0},"cash":{"opening":null,"received":0,"paid":0,"rewards":0,"sales":0},"prepaidUsed":{"pc":0,"food":0,"drink":0},"paidElec":0,"hrPayroll":{},"xpActions":{"clean":0,"repair":0,"serve":0},"reviewLog":[],"invest":0,"stockBuy":0,"customers":0,"lost":0,"reviews":[],"fame":0,"finance":{"borrowed":0,"paid":0,"interest":0,"seized":0}},"history":[],"quest":{"idx":6,"ready":false},"achievements":{},"tutorial":{"step":0,"done":true},"nextId":10,"pcCounter":8,"powerOff":0,"powerOffReason":"","phase":"open","lastReport":null,"clockFrozen":true,"saveVersion":4,"savedAt":1791022555795};
+userSaves.set('xomno01', XOMNO01_SAVE);
+
 export async function onRequest(context) {
+
   const { request, env } = context;
   const url = new URL(request.url);
   const path = url.pathname;
@@ -88,7 +93,7 @@ export async function onRequest(context) {
     });
   }
 
-  // 2. GET /api/bootstrap
+    // 2. GET /api/bootstrap
   if (path === '/api/bootstrap') {
     const auth = request.headers.get('authorization') || '';
     let name = '';
@@ -98,9 +103,17 @@ export async function onRequest(context) {
       if (payload.name) name = payload.name;
     } catch(e) {}
 
+    const key = name.toLowerCase();
+    const save = userSaves.get(key) || (key === 'xomno01' ? XOMNO01_SAVE : null);
+
     return new Response(JSON.stringify({
-      cloud: null,
-      profile: { shop_name: name, account_kind: name ? 'custom' : 'guest' },
+      cloud: save ? {
+        save: save,
+        revision: 1,
+        receipt: 'rcpt_' + (key || 'guest') + '_v1',
+        syncedAt: new Date().toISOString()
+      } : null,
+      profile: { shop_name: save?.shopName || name, account_kind: name ? 'custom' : 'guest' },
       userId: name ? 'user_' + name : 'guest_user'
     }), {
       status: 200,
@@ -127,10 +140,20 @@ export async function onRequest(context) {
     });
   }
 
-  // 4. POST /api/sync
+    // 4. POST /api/sync
   if (path === '/api/sync' && request.method === 'POST') {
     let body = {};
     try { body = await request.json(); } catch(e) {}
+    const auth = request.headers.get('authorization') || '';
+    let name = '';
+    try {
+      const token = auth.replace(/^Bearer\s+/i, '');
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.name) name = payload.name;
+    } catch(e) {}
+    if (name && body.save) {
+      userSaves.set(name.toLowerCase(), body.save);
+    }
     return new Response(JSON.stringify({
       revision: (body.revision || 0) + 1,
       receipt: crypto.randomUUID().replace(/-/g, ''),
