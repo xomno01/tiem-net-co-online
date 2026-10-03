@@ -23,6 +23,13 @@ fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 const db = new DatabaseSync(DB_PATH);
 
 db.exec(`
+  CREATE TABLE IF NOT EXISTS accounts (
+    username    TEXT PRIMARY KEY COLLATE NOCASE,
+    password_hash TEXT NOT NULL,
+    user_id     TEXT NOT NULL REFERENCES users(id),
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+  );
+
   CREATE TABLE IF NOT EXISTS users (
     id          TEXT PRIMARY KEY,
     account_kind TEXT NOT NULL DEFAULT 'guest',
@@ -234,6 +241,70 @@ function serveStatic(req, res) {
 
 // --- AUTH ---
 async function handleAuth(req, res, urlPath) {
+  // POST /api/auth/register (Tạo tài khoản với username & password)
+  if (urlPath === '/api/auth/register' && req.method === 'POST') {
+    const body = await readBody(req);
+    const username = (body.username || '').trim();
+    const password = body.password || '';
+
+    if (!username || username.length < 3 || username.length > 24) {
+      return errorJson(res, 'Tên đăng nhập phải từ 3 đến 24 ký tự!', 400);
+    }
+    if (!password || password.length < 4) {
+      return errorJson(res, 'Mật khẩu phải từ 4 ký tự trở lên!', 400);
+    }
+
+    const existing = db.prepare('SELECT username FROM accounts WHERE username = ?').get(username);
+    if (existing) {
+      return errorJson(res, 'Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!', 400);
+    }
+
+    const userId = 'u_' + crypto.randomUUID().replace(/-/g, '').slice(0, 16);
+    const passHash = crypto.createHash('sha256').update(password + 'netco_salt_2026').digest('hex');
+
+    db.prepare('INSERT INTO users (id, account_kind, display_name) VALUES (?, ?, ?)').run(userId, 'custom', username);
+    db.prepare('INSERT INTO accounts (username, password_hash, user_id) VALUES (?, ?, ?)').run(username, passHash, userId);
+
+    const accessToken = makeToken(userId);
+    return json(res, {
+      access_token: accessToken,
+      refresh_token: makeToken(userId + ':refresh'),
+      token_type: 'bearer',
+      expires_in: 86400 * 30,
+      user: { id: userId, username, account_kind: 'custom' },
+    });
+  }
+
+  // POST /api/auth/login (Đăng nhập tài khoản & mật khẩu riêng)
+  if (urlPath === '/api/auth/login' && req.method === 'POST') {
+    const body = await readBody(req);
+    const username = (body.username || '').trim();
+    const password = body.password || '';
+
+    if (!username || !password) {
+      return errorJson(res, 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!', 400);
+    }
+
+    const account = db.prepare('SELECT * FROM accounts WHERE username = ?').get(username);
+    if (!account) {
+      return errorJson(res, 'Tài khoản không tồn tại! Vui lòng đăng ký.', 401);
+    }
+
+    const passHash = crypto.createHash('sha256').update(password + 'netco_salt_2026').digest('hex');
+    if (account.password_hash !== passHash) {
+      return errorJson(res, 'Sai mật khẩu! Vui lòng thử lại.', 401);
+    }
+
+    const accessToken = makeToken(account.user_id);
+    return json(res, {
+      access_token: accessToken,
+      refresh_token: makeToken(account.user_id + ':refresh'),
+      token_type: 'bearer',
+      expires_in: 86400 * 30,
+      user: { id: account.user_id, username, account_kind: 'custom' },
+    });
+  }
+
   // POST /api/auth/guest → create guest account, return tokens
   if (urlPath === '/api/auth/guest' && req.method === 'POST') {
     const userId = 'guest_' + crypto.randomUUID().replace(/-/g, '').slice(0, 16);

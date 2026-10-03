@@ -14,6 +14,60 @@ export async function onRequest(context) {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
+  
+  // POST /api/auth/register (Tạo tài khoản với username & password)
+  if (path === '/api/auth/register' && request.method === 'POST') {
+    let body = {};
+    try { body = await request.json(); } catch(e) {}
+    const username = (body.username || '').trim();
+    const password = body.password || '';
+
+    if (!username || username.length < 3 || username.length > 24) {
+      return new Response(JSON.stringify({ error: 'Tên đăng nhập phải từ 3 đến 24 ký tự!' }), { status: 400, headers: corsHeaders });
+    }
+    if (!password || password.length < 4) {
+      return new Response(JSON.stringify({ error: 'Mật khẩu phải từ 4 ký tự trở lên!' }), { status: 400, headers: corsHeaders });
+    }
+
+    const userId = 'u_' + btoa(username.toLowerCase()).replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
+      btoa(JSON.stringify({ sub: userId, exp: Math.floor(Date.now() / 1000) + 86400 * 30, name: username })) +
+      '.signature';
+
+    return new Response(JSON.stringify({
+      access_token: token,
+      refresh_token: 'refresh_' + userId,
+      token_type: 'bearer',
+      expires_in: 86400 * 30,
+      user: { id: userId, username, account_kind: 'custom' }
+    }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' } });
+  }
+
+  // POST /api/auth/login (Đăng nhập tài khoản & mật khẩu riêng)
+  if (path === '/api/auth/login' && request.method === 'POST') {
+    let body = {};
+    try { body = await request.json(); } catch(e) {}
+    const username = (body.username || '').trim();
+    const password = body.password || '';
+
+    if (!username || !password) {
+      return new Response(JSON.stringify({ error: 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!' }), { status: 400, headers: corsHeaders });
+    }
+
+    const userId = 'u_' + btoa(username.toLowerCase()).replace(/[^a-zA-Z0-9]/g, '').slice(0, 16);
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
+      btoa(JSON.stringify({ sub: userId, exp: Math.floor(Date.now() / 1000) + 86400 * 30, name: username })) +
+      '.signature';
+
+    return new Response(JSON.stringify({
+      access_token: token,
+      refresh_token: 'refresh_' + userId,
+      token_type: 'bearer',
+      expires_in: 86400 * 30,
+      user: { id: userId, username, account_kind: 'custom' }
+    }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' } });
+  }
+
   // 1. POST /auth/v1/signup
   if (path === '/auth/v1/signup' && request.method === 'POST') {
     const userId = 'cf_guest_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12);
@@ -36,10 +90,18 @@ export async function onRequest(context) {
 
   // 2. GET /api/bootstrap
   if (path === '/api/bootstrap') {
+    const auth = request.headers.get('authorization') || '';
+    let name = '';
+    try {
+      const token = auth.replace(/^Bearer\s+/i, '');
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.name) name = payload.name;
+    } catch(e) {}
+
     return new Response(JSON.stringify({
       cloud: null,
-      profile: { shop_name: '', account_kind: 'guest' },
-      userId: 'guest_user'
+      profile: { shop_name: name, account_kind: name ? 'custom' : 'guest' },
+      userId: name ? 'user_' + name : 'guest_user'
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json; charset=utf-8' }

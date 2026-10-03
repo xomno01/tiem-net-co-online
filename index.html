@@ -116,10 +116,11 @@
           <div class="online-auth-title"><span class="online-pulse"></span><div><b>TÀI KHOẢN ONLINE</b></div></div>
           <div id="online-status" class="online-status">Đang kết nối dịch vụ online…</div>
           <div class="online-auth-actions">
-            <button id="online-google" class="btn btn-blue small">ĐĂNG NHẬP GOOGLE</button>
-            <button id="online-guest" class="btn btn-yellow small">CHƠI NHANH TÀI KHOẢN KHÁCH</button>
+            <button type="button" id="online-custom-auth-btn" class="btn btn-blue small" title="Đăng nhập hoặc đăng ký tài khoản mật khẩu riêng">ĐĂNG NHẬP / ĐĂNG KÝ</button>
+            <button id="online-guest" class="btn btn-yellow small">CHƠI NHANH (KHÁCH)</button>
+            <button id="online-google" hidden></button>
             <div id="online-identity" class="online-identity" hidden><span>✓</span><div><b id="online-account-name">Đã kết nối</b><small id="online-account-kind">Cloud an toàn</small></div></div>
-            <button id="online-link-google" class="btn btn-blue small" hidden>LIÊN KẾT GOOGLE</button>
+            <button id="online-link-google" class="btn btn-blue small" hidden>LIÊN KẾT TÀI KHOẢN</button>
             <button id="online-logout" class="link-btn" hidden>Đăng xuất / đổi tài khoản</button>
           </div>
         </div>
@@ -248,5 +249,181 @@
   
   
   
+
+  <!-- ================================================================= -->
+  <!-- MODAL ĐĂNG NHẬP / ĐĂNG KÝ TÀI KHOẢN & MẬT KHẨU RIÊNG (NO SUPABASE) -->
+  <!-- ================================================================= -->
+  <style>
+    .auth-modal-backdrop {
+      position: fixed; inset: 0; background: rgba(15, 10, 20, 0.85);
+      display: flex; align-items: center; justify-content: center; z-index: 99999;
+      backdrop-filter: blur(4px); animation: authFadeIn 0.15s ease;
+    }
+    @keyframes authFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .auth-modal-card {
+      background: #241b2b; border: 2px solid #e8b890; border-radius: 16px;
+      width: 90%; max-width: 380px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+      color: #fff; font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .auth-modal-head {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+    }
+    .auth-modal-head h3 {
+      margin: 0; font-family: 'Baloo 2', sans-serif; font-size: 20px; color: #ffca3a; letter-spacing: 0.5px;
+    }
+    .auth-close-btn {
+      background: none; border: none; font-size: 26px; color: #bbb; cursor: pointer; line-height: 1; padding: 0 6px;
+    }
+    .auth-close-btn:hover { color: #fff; }
+    .auth-modal-tabs {
+      display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1.5px solid #3c2d47; padding-bottom: 8px;
+    }
+    .auth-tab-btn {
+      flex: 1; padding: 8px 10px; background: #32253b; border: 1.5px solid #4a3858; border-radius: 8px;
+      color: #aaa; font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.15s; font-family: 'Baloo 2', sans-serif;
+    }
+    .auth-tab-btn.active {
+      background: #ffaa00; border-color: #ffd166; color: #1a1420; box-shadow: 0 2px 8px rgba(255,170,0,0.3);
+    }
+    .auth-field {
+      display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; text-align: left;
+    }
+    .auth-field label {
+      font-size: 12px; font-weight: 600; color: #e8b890; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .auth-field input {
+      background: #15101a; border: 1.5px solid #5a456b; border-radius: 8px;
+      padding: 10px 12px; color: #fff; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s;
+    }
+    .auth-field input:focus {
+      border-color: #ffaa00; box-shadow: 0 0 0 2px rgba(255,170,0,0.2);
+    }
+    .auth-msg {
+      padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; text-align: center;
+    }
+    .auth-msg.error { background: #5c1822; color: #ff8b94; border: 1px solid #ff5964; }
+    .auth-msg.success { background: #164e29; color: #72efdd; border: 1px solid #38b000; }
+    .auth-actions {
+      display: flex; flex-direction: column; gap: 8px; margin-top: 6px;
+    }
+    .auth-actions button { width: 100%; cursor: pointer; }
+    #online-auth.signed-in #online-custom-auth-btn { display: none !important; }
+    #online-auth.signed-in #online-guest { display: none !important; }
+  </style>
+
+  <div id="auth-modal" class="auth-modal-backdrop" hidden>
+    <div class="auth-modal-card">
+      <div class="auth-modal-head">
+        <h3 id="auth-modal-title">TÀI KHOẢN CLOUD RIÊNG</h3>
+        <button type="button" id="auth-modal-close" class="auth-close-btn" aria-label="Đóng">&times;</button>
+      </div>
+      <div class="auth-modal-tabs">
+        <button type="button" id="tab-btn-login" class="auth-tab-btn active">ĐĂNG NHẬP</button>
+        <button type="button" id="tab-btn-register" class="auth-tab-btn">ĐĂNG KÝ MỚI</button>
+      </div>
+      <form id="auth-form" class="auth-form" onsubmit="return false;">
+        <div class="auth-field">
+          <label for="auth-username">Tên tài khoản:</label>
+          <input type="text" id="auth-username" placeholder="Ví dụ: chuhuan_99" required minlength="3" maxlength="24" autocomplete="username">
+        </div>
+        <div class="auth-field">
+          <label for="auth-password">Mật khẩu:</label>
+          <input type="password" id="auth-password" placeholder="Tối thiểu 4 ký tự" required minlength="4" maxlength="32" autocomplete="current-password">
+        </div>
+        <div id="auth-msg" class="auth-msg" hidden></div>
+        <div class="auth-actions">
+          <button type="submit" id="auth-submit-btn" class="btn btn-green big">ĐĂNG NHẬP NGAY</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function initCustomAuthModal() {
+      let authMode = 'login';
+      const modal = document.getElementById('auth-modal');
+      const customBtn = document.getElementById('online-custom-auth-btn');
+      const closeBtn = document.getElementById('auth-modal-close');
+      const tabLogin = document.getElementById('tab-btn-login');
+      const tabRegister = document.getElementById('tab-btn-register');
+      const submitBtn = document.getElementById('auth-submit-btn');
+      const form = document.getElementById('auth-form');
+      const userInp = document.getElementById('auth-username');
+      const passInp = document.getElementById('auth-password');
+      const msgBox = document.getElementById('auth-msg');
+
+      function openModal() {
+        modal.hidden = false;
+        msgBox.hidden = true;
+        userInp.value = ''; passInp.value = '';
+        setTimeout(() => userInp.focus(), 100);
+      }
+      function closeModal() { modal.hidden = true; }
+
+      if (customBtn) customBtn.addEventListener('click', openModal);
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+      tabLogin.addEventListener('click', () => {
+        authMode = 'login';
+        tabLogin.classList.add('active'); tabRegister.classList.remove('active');
+        submitBtn.textContent = 'ĐĂNG NHẬP NGAY';
+        submitBtn.className = 'btn btn-green big';
+        msgBox.hidden = true;
+      });
+
+      tabRegister.addEventListener('click', () => {
+        authMode = 'register';
+        tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+        submitBtn.textContent = 'TẠO TÀI KHOẢN MỚI';
+        submitBtn.className = 'btn btn-orange big';
+        msgBox.hidden = true;
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = userInp.value.trim();
+        const password = passInp.value;
+        if (!username || !password) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'ĐANG XỬ LÝ...';
+        msgBox.hidden = true;
+
+        try {
+          const endpoint = authMode === 'register' ? '/api/auth/register' : '/api/auth/login';
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.error || data.message || 'Xác thực thất bại!');
+          }
+
+          msgBox.className = 'auth-msg success';
+          msgBox.textContent = authMode === 'register' ? 'Đăng ký thành công! Đang vào game...' : 'Đăng nhập thành công!';
+          msgBox.hidden = false;
+
+          // Lưu phiên trực tiếp vào storage của game
+          localStorage.setItem('netco_online_session_v1', JSON.stringify(data));
+
+          setTimeout(() => {
+            closeModal();
+            location.reload();
+          }, 600);
+        } catch (err) {
+          msgBox.className = 'auth-msg error';
+          msgBox.textContent = err.message;
+          msgBox.hidden = false;
+          submitBtn.disabled = false;
+          submitBtn.textContent = authMode === 'register' ? 'TẠO TÀI KHOẢN MỚI' : 'ĐĂNG NHẬP NGAY';
+        }
+      });
+    })();
+  </script>
+
 </body>
 </html>
