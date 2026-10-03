@@ -444,7 +444,7 @@ function handleReset(userId, body) {
     "playerName": "",
     "playerGender": "m",
     "playerLook": { "skin": "#e8b890", "hair": "#1f1a1a", "style": "messy", "shirt": "#f4f4f4", "pants": "#3a6bc9", "shoes": "#6b4a2a", "acc": "", "gender": "m" },
-    "money": 500000,
+    "money": 20000000,
     "day": 1,
     "time": 420,
     "fame": 0,
