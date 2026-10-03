@@ -1,6 +1,6 @@
 'use strict';
 // Build ghi mã bản vào đây; mỗi lần deploy đổi cache code/ảnh. Âm thanh dùng cache riêng ổn định.
-const VERSION = 'netco-pwa-20261003-ee17a458a4';
+const VERSION = 'netco-pwa-20261003-f32ff34125';
 // v2: âm thanh đã nén lại (.m4a) — bản v1 (~24 MB) bị xóa khi kích hoạt.
 const AUDIO = 'netco-audio-v3';
 const BUILT = !VERSION.endsWith('-v4');   // build production gắn mã bản vào VERSION
