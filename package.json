@@ -1,0 +1,23 @@
+{
+  "name": "tiem-net-co-online",
+  "version": "1.2.1",
+  "description": "Tiệm Nét Cỏ Online - Server riêng & Web Game Pixel Art Quản Lý Quán Nét Nhiều Người Chơi (Node.js + SQLite)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "pm2": "pm2 start server.js --name tiem-net-co"
+  },
+  "keywords": [
+    "game",
+    "pixel-art",
+    "simulation",
+    "tiem-net-co",
+    "sqlite",
+    "multiplayer",
+    "vietnam"
+  ],
+  "author": "xomno01",
+  "license": "MIT"
+}

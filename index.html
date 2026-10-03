@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1a1420">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Tiệm Nét Cỏ">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Tiệm Nét Cỏ – Ông Chủ Quán Nét</title>
+  <meta name="description" content="Game quản lý quán net pixel art: từ net cỏ 4 máy thành cyber game lớn nhất khu phố.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/app.css">
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD trên: 1 thanh thống nhất (ngang: 1 hàng · dọc: 2 hàng) -->
+  <div id="hud" hidden>
+    <div id="hud-daybox" class="hud-time">
+      <span class="hud-day"><b id="hud-day">NGÀY 1</b> · <span id="hud-dayname">Thứ 2</span></span>
+      <span id="hud-clock" class="hud-clock num">07:00</span>
+    </div>
+    <div id="hud-stage" class="hud-shop"></div>
+    <div id="hud-money" class="hud-money"><span class="ic"></span><span id="hud-money-v" class="num">0đ</span><i id="save-dot" title="Đã lưu trên máy"></i></div>
+    <div class="hud-stats">
+      <button type="button" id="hud-rating" class="hud-stat" data-hud-stat="rating" aria-label="Đánh giá"><span class="ic"></span><span id="hud-rating-v" class="num">3.0</span><span id="hud-stars" class="stars"></span></button>
+      <button type="button" id="hud-fame" class="hud-stat" data-hud-stat="fame" aria-label="Danh tiếng"><span class="ic"></span><span id="hud-fame-v" class="num">0</span></button>
+      <button type="button" id="hud-beauty" class="hud-stat" data-hud-stat="beauty" aria-label="Độ đẹp"><span class="ic"></span><span id="hud-beauty-v" class="num">0</span></button>
+      <div id="hud-status" class="hud-status">
+        <button type="button" id="hud-ping" class="st" data-hud-stat="ping" aria-label="Ping mạng"><span class="ic"></span><span id="hud-ping-v">45</span><span class="u">ms</span></button>
+        <button type="button" id="hud-temp" class="st" data-hud-stat="temp" aria-label="Nhiệt độ"><span class="ic"></span><span id="hud-temp-v">30°C</span></button>
+        <button type="button" id="hud-power" class="st" data-hud-stat="power" aria-label="Tải điện"><span class="ic"></span><span id="hud-power-v">0/8</span></button>
+      </div>
+    </div>
+    <button id="btn-sound" class="hud-btn hud-icon" title="Âm thanh" data-ic="sound"></button>
+    <button id="btn-music" class="hud-btn hud-icon" title="Nhạc nền" data-ic="music"></button>
+    <button id="btn-menu" class="hud-btn hud-icon" title="Menu" data-ic="menu"></button>
+  </div>
+  <div id="hud-events" class="events"></div>
+  <nav id="floor-nav" aria-label="Chuyển tầng" hidden></nav>
+  <div id="pause-banner" hidden>TẠM DỪNG</div>
+
+  <div id="quest-tracker" hidden></div>
+  <div id="toasts"></div>
+
+  <!-- Menu dưới -->
+  <div id="bottom-bar" hidden></div>
+  <div id="build-bar" hidden></div>
+
+  <!-- Panel phải -->
+  <div id="panel" hidden>
+    <div class="panel-head"><h2 id="panel-title"></h2><button id="panel-profile" class="panel-profile-btn" data-act="my-profile" data-ic="user" data-label="HỒ SƠ" title="Mở hồ sơ của tôi" hidden></button><button id="panel-close" aria-label="Đóng bảng quản lý" class="pp-x" data-ic="close"></button></div>
+    <div id="panel-tabs" class="panel-tabs"></div>
+    <div id="panel-body" class="panel-body"></div>
+  </div>
+
+  <div id="zoom-ctrl" hidden><button id="btn-photo" type="button" class="hud-btn" aria-label="Chụp ảnh quán: ẩn giao diện, kéo hoặc zoom để căn ảnh, chạm để thoát" title="Chụp ảnh quán · kéo/zoom để căn ảnh · chạm để thoát"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h4l2-3h6l2 3h4v13H3z"/><circle cx="12" cy="13" r="4"/></svg></button><button class="hud-btn" data-zoom="0" data-ic="fit" title="Về giữa quán (phím 0)"></button></div>
+  <div id="side-actions" hidden aria-label="Tác vụ nhanh"></div>
+  <button id="btn-chat" class="hud-btn" title="Mở Chat và Bạn bè" aria-label="Mở Chat và Bạn bè" hidden></button>
+  <button id="btn-store" class="hud-btn" title="Cửa hàng" aria-label="Cửa hàng" hidden></button>
+  <div id="popup" hidden></div>
+  <div id="modal-layer" hidden></div>
+
+  <!-- Tutorial -->
+  <div id="coach" hidden>
+    <img class="coach-av" alt="">
+    <div class="coach-main">
+      <div class="coach-text"></div>
+    </div>
+    <div class="coach-btns"><button id="coach-skip" class="link-btn" aria-label="Bỏ qua hướng dẫn">Bỏ qua</button><button id="coach-next" class="btn btn-green"></button></div>
+  </div>
+  <div id="coach-arrow" hidden>▼</div>
+
+  <!-- Màn hình chính -->
+  <div id="title-screen" hidden>
+    <div class="title-box">
+      <div class="logo">
+        <div class="logo-sub">ÔNG CHỦ QUÁN NÉT</div>
+        <div class="logo-main">TIỆM NÉT CỎ</div>
+        <div class="title-version" aria-label="Phiên bản game 1.2.1">v1.2.1</div>
+      </div>
+      <div class="title-btns">
+        <div id="online-auth" class="online-auth">
+          <div class="online-auth-title"><span class="online-pulse"></span><div><b>TÀI KHOẢN ONLINE</b></div></div>
+          <div id="online-status" class="online-status">Đang kết nối dịch vụ online…</div>
+          <div class="online-auth-actions">
+            <button id="online-google" class="btn btn-blue small">ĐĂNG NHẬP GOOGLE</button>
+            <button id="online-guest" class="btn btn-yellow small">CHƠI NHANH TÀI KHOẢN KHÁCH</button>
+            <div id="online-identity" class="online-identity" hidden><span>✓</span><div><b id="online-account-name">Đã kết nối</b><small id="online-account-kind">Cloud an toàn</small></div></div>
+            <button id="online-link-google" class="btn btn-blue small" hidden>LIÊN KẾT GOOGLE</button>
+            <button id="online-logout" class="link-btn" hidden>Đăng xuất / đổi tài khoản</button>
+          </div>
+        </div>
+        <button id="t-continue" class="btn btn-green big" data-ic="play" data-label="TIẾP TỤC"></button>
+        <div id="t-save-info" class="save-info"></div>
+        <button id="t-new" class="btn btn-orange big" data-ic="star" data-label="GAME MỚI"></button>
+        <button id="t-delete" class="btn btn-gray small" data-ic="close" data-label="XÓA SAVE"></button>
+        <a id="t-community" class="btn btn-blue small community-btn" href="https://www.facebook.com/share/g/18NEtZqhFd/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Mở cộng đồng Tiệm Nét Cỏ trên Facebook" title="Mở cộng đồng Facebook trong tab mới">
+          <svg class="community-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.019 4.388 11.012 10.125 11.854v-8.385H7.078v-3.469h3.047V9.429c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.98h-1.513c-1.491 0-1.956.932-1.956 1.888v2.237h3.328l-.532 3.469h-2.796v8.385C19.612 23.085 24 18.092 24 12.073Z"/></svg>
+          <span>Cộng đồng</span>
+        </a>
+      </div>
+      <button id="t-settings" class="btn btn-blue small" style="margin-top:14px">ÂM THANH & CÀI ĐẶT</button>
+      <button id="t-install" class="btn btn-yellow small" aria-label="Cài game vào máy">CÀI GAME</button>
+    </div>
+  </div>
+
+  <script>const APP_BUILD="20261003-local-server";</script>
+  <script src="js/app.js"></script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</body>
+</html>
